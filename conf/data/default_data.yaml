@@ -1,0 +1,2 @@
+data_dir: "/path/to/data"
+train_file_name: "train"

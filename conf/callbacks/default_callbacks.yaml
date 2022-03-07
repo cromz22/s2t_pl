@@ -1,0 +1,7 @@
+early_stop:
+  monitor: "valid/loss"
+  patience: 5
+checkpoint:
+  monitor: "valid/loss"
+lr_monitor:
+  logging_interval: "step"
