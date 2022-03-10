@@ -1,2 +1,2 @@
-data_dir: "/path/to/data"
-train_file_name: "train"
+data_dir: "/Users/shimizu/research/iwslt2022/mustc_v2/dummy"
+tgt_lang: "de"

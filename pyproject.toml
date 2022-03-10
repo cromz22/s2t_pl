@@ -11,6 +11,7 @@ transformers = "^4.17.0"
 pytorch-lightning = "^1.5.10"
 wandb = "^0.12.11"
 hydra-core = "^1.1.1"
+SoundFile = "^0.10.3"
 
 [tool.poetry.dev-dependencies]
 

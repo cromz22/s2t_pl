@@ -17,7 +17,7 @@ def main(cfg: DictConfig):
     seed_everything(seed=cfg.seed, workers=True)
 
     model = S2TLightningModule(hparams=cfg)
-    datamodule = MuSTCDataModule()
+    datamodule = MuSTCDataModule(hparams=cfg)
 
     wandb_logger = WandbLogger(**cfg.logger)
 
