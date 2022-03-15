@@ -7,6 +7,10 @@ from mustcv2_dataset import MuSTCv2Dataset
 
 
 def collate_fn(batch):
+    """
+    change dataset items to dict of tensors
+    TODO: need change
+    """
     collated_batch = {}
     for sample in batch:
         for key, value in sample.items():
@@ -38,6 +42,9 @@ class MuSTCDataModule(LightningDataModule):
             )
 
     def train_dataloader(self):
+        """
+        turn dataset into batch
+        """
         return DataLoader(
             dataset=self.train_dataset,
             shuffle=True,

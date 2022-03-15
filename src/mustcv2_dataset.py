@@ -58,6 +58,9 @@ class MuSTCv2Dataset(Dataset):
                 )
 
     def __getitem__(self, n: int) -> Tuple[torch.Tensor, int, str, str, str, str, str]:
+        """
+        single input
+        """
         (
             wav_path,
             offset,
