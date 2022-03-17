@@ -31,36 +31,29 @@ class S2TLightningModule(LightningModule):
             lr=self.lr, warmup_updates=hparams["module"]["optim"]["warmup_updates"]
         )
 
-    def forward(self, waveform, sr, src_utt, tgt_utt, spk_id, tgt_lang, utt_id):
+    def forward(self, input_values, labels):
         """
-        Defines prediction step. arguments are the contents of batch
+        Prediction step. The arguments are the contents of the batch.
         """
-        input_values = self.processor(waveform, sampling_rate=sr, return_tensors="pt").input_values
-        return input_values
+        return self.model(input_values, labels=labels)
 
     def training_step(self, batch, batch_idx):
         """
-        batch is a dictionary
-        batch_idx is automatically assigned
-        returns loss or a dictionary like {"loss": xx.x, "metric1": yy.y, ...}
+        batch is a dictionary.
+        batch_idx is automatically assigned.
+        Return loss or a dictionary like {"loss": xx.x, "metric1": yy.y, ...}.
         """
-        input_values = self(**batch)  # this calls forward
+        model_output = self(**batch)
+        # NOTE: self calls forward
 
-        with self.processor.as_target_processor():
-            # target is src_utt because the task is ASR
-            labels = self.processor(batch["src_utt"], return_tensors="pt").input_ids
-
-        loss = self.model(input_values, labels=labels).loss
+        loss = model_output.loss
         self.log("train/loss", loss)
         return loss
 
     def validation_step(self, batch, batch_idx):
-        input_values = self(**batch)
+        model_output = self(**batch)
 
-        with self.processor.as_target_processor():
-            labels = self.processor(batch["src_utt"], return_tensors="pt").input_ids
-
-        loss = self.model(input_values, labels=labels).loss
+        loss = model_output.loss
         self.log("valid/loss", loss)
         return loss
 
@@ -74,10 +67,7 @@ class S2TLightningModule(LightningModule):
         # transcription = self.processor.decode(predicted_ids[0])
         # save_transcription()
 
-        with self.processor.as_target_processor():
-            labels = self.processor(batch["src_utt"], return_tensors="pt").input_ids
-
-        loss = self.model(input_values, labels=labels).loss
+        loss = self.model(input_values, labels=batch["labels"]).loss
         self.log("test/loss", loss)
         return loss
 

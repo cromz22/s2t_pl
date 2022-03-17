@@ -1,1 +1,12 @@
 seed: 23
+
+defaults:
+  - callbacks: default_callbacks
+  - data: default_data
+  - logger: wandb_logger
+  - module: default_module
+  - trainer: default_trainer
+  - _self_
+
+name: run1
+checkpoint_path: ""

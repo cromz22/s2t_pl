@@ -15,6 +15,7 @@ from datamodules import MuSTCDataModule
 @hydra.main(config_path="../conf", config_name="config")
 def main(cfg: DictConfig):
     seed_everything(seed=cfg.seed, workers=True)
+    print(f"{cfg = }")
 
     model = S2TLightningModule(hparams=cfg)
     datamodule = MuSTCDataModule(hparams=cfg)
