@@ -7,8 +7,6 @@ from transformers import Wav2Vec2Processor
 from mustcv2_dataset import MuSTCv2Dataset
 
 
-
-
 class MuSTCDataModule(LightningDataModule):
     def __init__(self, hparams):
         super().__init__()
@@ -53,14 +51,16 @@ class MuSTCDataModule(LightningDataModule):
         # Assume all waveforms in the batch have the same sampling rate.
 
         # import pdb; pdb.set_trace()
-        input_values = self.processor(waveforms, sampling_rate=sr, return_tensors="pt", padding=True).input_values
+        input_values = self.processor(
+            waveforms, sampling_rate=sr, return_tensors="pt", padding=True
+        ).input_values
         # NOTE: waveform can be multiple waveforms. In that case, padding is performed to fit the longest waveform.
 
         return dict(
-                input_values=input_values,
-                # labels=torch.stack(labels)
-                labels=labels
-                )
+            input_values=input_values,
+            # labels=torch.stack(labels)
+            labels=labels,
+        )
 
     def train_dataloader(self):
         """

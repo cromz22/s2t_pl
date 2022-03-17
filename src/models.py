@@ -26,6 +26,7 @@ class S2TLightningModule(LightningModule):
             "facebook/wav2vec2-base-960h"
         )
         self.model = Wav2Vec2ForCTC.from_pretrained("facebook/wav2vec2-base-960h")
+        # self.model = nn.Linear(28353980, 768)
         self.lr = hparams["module"]["optim"]["lr"]
         self.lr_func = InverseSquareRootSchedule(
             lr=self.lr, warmup_updates=hparams["module"]["optim"]["warmup_updates"]
@@ -35,6 +36,7 @@ class S2TLightningModule(LightningModule):
         """
         Prediction step. The arguments are the contents of the batch.
         """
+        # import pdb; pdb.set_trace()
         return self.model(input_values, labels=labels)
 
     def training_step(self, batch, batch_idx):
@@ -63,8 +65,9 @@ class S2TLightningModule(LightningModule):
         logits = self.model(input_values).logits
         predicted_ids = torch.argmax(logits, dim=-1)
 
-        # TODO: polish this
-        # transcription = self.processor.decode(predicted_ids[0])
+        transcription = self.processor.decode(predicted_ids[0])
+        print(transcription)
+        # TODO
         # save_transcription()
 
         loss = self.model(input_values, labels=batch["labels"]).loss

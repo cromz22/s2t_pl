@@ -30,7 +30,7 @@ def main(cfg: DictConfig):
 
     trainer = Trainer(logger=wandb_logger, callbacks=callbacks, **cfg.trainer)
     trainer.fit(model=model, datamodule=datamodule)
-    trainer.test(model=model, datamodule=datamodule)
+    # trainer.test(model=model, datamodule=datamodule)
 
 
 if __name__ == "__main__":
