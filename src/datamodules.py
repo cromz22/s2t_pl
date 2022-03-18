@@ -1,4 +1,3 @@
-import torch
 from pytorch_lightning import LightningDataModule
 from typing import Optional
 from torch.utils.data import DataLoader
@@ -42,10 +41,10 @@ class MuSTCDataModule(LightningDataModule):
         Perform padding if necessary.
         """
         waveforms = []
-        labels = []
+        src_utts = []
         for sample in batch_list:
             waveforms.append(sample["waveform"])
-            labels.append(sample["labels"])
+            src_utts.append(sample["src_utt"])
 
         sr = batch_list[0]["sr"]
         # Assume all waveforms in the batch have the same sampling rate.
@@ -56,11 +55,12 @@ class MuSTCDataModule(LightningDataModule):
         ).input_values
         # NOTE: waveform can be multiple waveforms. In that case, padding is performed to fit the longest waveform.
 
-        return dict(
-            input_values=input_values,
-            # labels=torch.stack(labels)
-            labels=labels,
-        )
+        with self.processor.as_target_processor():
+            labels = self.processor(
+                src_utts, return_tensors="pt", padding=True
+            ).input_ids.squeeze()
+
+        return dict(input_values=input_values, labels=labels)
 
     def train_dataloader(self):
         """

@@ -3,7 +3,6 @@ from torch.utils.data import Dataset
 from pathlib import Path
 import yaml
 import soundfile as sf
-from transformers import Wav2Vec2Processor
 
 
 class MuSTCv2Dataset(Dataset):
@@ -51,11 +50,6 @@ class MuSTCv2Dataset(Dataset):
             else:
                 counter += 1
 
-        # processor to use in __getitem__
-        self.processor = Wav2Vec2Processor.from_pretrained(
-            "facebook/wav2vec2-base-960h"
-        )
-
     def __getitem__(self, idx: int):  # Dict[np.ndarray, torch.Tensor, torch.Tensor]
         """
         Return single input to model
@@ -71,16 +65,10 @@ class MuSTCv2Dataset(Dataset):
 
         sr = torch.tensor([sr])
 
-        with self.processor.as_target_processor():
-            # target is src_utt because the task is ASR
-            labels = self.processor(
-                src_utt, return_tensors="pt", padding=True
-            ).input_ids.squeeze()
-
         return dict(
             waveform=waveform,
             sr=sr,
-            labels=labels,
+            src_utt=src_utt,  # which is the target because the task is ASR
         )
 
     def __len__(self) -> int:
