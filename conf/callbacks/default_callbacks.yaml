@@ -3,5 +3,6 @@ early_stop:
   patience: 5
 checkpoint:
   monitor: "valid/loss"
+  save_top_k: -1
 lr_monitor:
   logging_interval: "step"
